@@ -3,13 +3,9 @@
 #include "response.h"
 #include <iostream>
 #include <string>
-#include <array>
-#include <fstream>
 #include <fcntl.h>
 #include <netdb.h>
-#include <stdio.h>
 #include <string>
-#include <sys/ioctl.h>
 #include <sys/socket.h>
 #include <unistd.h> // open(), write(), close()
 
@@ -76,7 +72,6 @@ void Network::write(std::string payload)
     std::cout << "(Data sent to target)\n";
 }
 
-// TODO: use this once I add signal termination
 void Network::close(void)
 {
     if (clientfd)
@@ -85,6 +80,7 @@ void Network::close(void)
         ::close(sockfd);
 }
 
+// Trigered at the end of each main() while loop
 Network::~Network()
 {
     if (clientfd)

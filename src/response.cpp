@@ -48,10 +48,8 @@ std::string Response::get_content (std::string target)
 
             else {
                 // TODO: Assuming that all content is text
-                content.assign(
-                        (std::istreambuf_iterator<char>(file)),
-                        std::istreambuf_iterator<char>()
-                        );
+                content.assign((std::istreambuf_iterator<char>(file)),
+                        std::istreambuf_iterator<char>());
             }
 
             file.close();

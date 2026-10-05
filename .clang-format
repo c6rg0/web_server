@@ -100,23 +100,23 @@ PointerAlignment: Right
 # ReflowComments: Always
 SortIncludes: true 
 SortUsingDeclarations: false
-SpaceAfterCStyleCast: false
+SpaceAfterCStyleCast: true 
 SpaceAfterTemplateKeyword: true
 SpaceBeforeAssignmentOperators: true
 SpaceBeforeCtorInitializerColon: true
 SpaceBeforeInheritanceColon: true
 SpaceBeforeParens: ControlStatementsExceptForEachMacros
 SpaceBeforeRangeBasedForLoopColon: true
-SpaceInEmptyParentheses: false
+SpaceInEmptyParentheses: true 
 # SpacesBeforeTrailingComments: 2
-SpacesInAngles: false
-SpacesInContainerLiterals: false
-SpacesInCStyleCastParentheses: false
-SpacesInParentheses: false
-SpacesInSquareBrackets: false
+SpacesInAngles: true 
+SpacesInContainerLiterals: true 
+SpacesInCStyleCastParentheses: true 
+SpacesInParentheses: true
+SpacesInSquareBrackets: true 
 SpacesInLineCommentPrefix:
   Minimum: 1
 Standard: Cpp03
 TabWidth: 4
-UseTab: Always
+UseTab: false 
 ...

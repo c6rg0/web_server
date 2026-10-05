@@ -22,7 +22,6 @@ void Request::log_request (void)
 
     file << buffer;
     file.close();
-    req_count++;
 }
 
 void Request::lexer (void)
