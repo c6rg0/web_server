@@ -1,7 +1,6 @@
 //TODO: check if all these headers are required
 #include "net.h"
-#include "lex.h"
-#include "assets.h"
+#include "response.h"
 #include <iostream>
 #include <string>
 #include <array>
@@ -36,9 +35,9 @@ Network::Network (void)
     }
 }
 
-void Network::Listen ()
+void Network::listen (void)
 {
-    if (listen(sockfd, SOMAXCONN) != 0) {
+    if (::listen(sockfd, SOMAXCONN) != 0) {
         std::cout << "(Couldn't listen)\n";
         exit(1);
     }
@@ -46,58 +45,48 @@ void Network::Listen ()
     sockaddr_in client_addr;
     socklen_t client_len = sizeof(client_addr);
 
-    while (1) {
-        clientfd = accept(sockfd, (sockaddr *)&client_addr, &client_len);
+    clientfd = accept(sockfd, (sockaddr *)&client_addr, &client_len);
 
-        if (clientfd < 0) {
-            std::cout << "(Accept error)\n";
-            exit(1);
-        }
-        std::cout << "\n(Accept success)\n";
-        break;
+    if (clientfd < 0) {
+        std::cout << "(Accept error)\n";
+        exit(1);
     }
+
+    std::cout << "\n(Accept success)\n";
 }
 
-void Network::Response (void)
+void Network::read (char* buffer)
 {
-    //TODO: is this the most optimal buffer?
-    char buffer[8192];
-
-    ssize_t request = read(clientfd, buffer, 8192);
+    ssize_t request = ::read(clientfd, buffer, 8192);
 
     if (request <= 0) {
         std::cout << "(Request contains no data or read error)\n";
         exit(1);
     }
+}
 
-    Lexer lexer;
-    lexer.get_req_tokens(buffer); // todo
-
-    Assets assets;
-    std::string payload = assets.res_route(lexer.target);
-
+void Network::write(std::string payload)
+{
     ssize_t response;
-    // std::string get_str("GET");
-
-    if ((lexer.method.compare("GET")) == 0) {
-        response = write(clientfd, payload.data(), payload.size());
-        if (response < 0) {
-            std::cout << "(Data wasn't written to target)\n";
-            exit(1);
-        }
-        std::cout << "(Data sent to target)\n";
-    } else {
-        std::cout << "(method did not match GET)\n";
+    response = ::write(clientfd, payload.data(), payload.size());
+    if (response < 0) {
+        std::cout << "(Data wasn't written to target)\n";
         exit(1);
     }
+    std::cout << "(Data sent to target)\n";
+}
 
-    close(clientfd);
+// TODO: use this once I add signal termination
+void Network::close(void)
+{
+    if (clientfd)
+        ::close(clientfd);
+    if (sockfd)
+        ::close(sockfd);
 }
 
 Network::~Network()
 {
-    if (sockfd)
-        close(sockfd);
     if (clientfd)
-        close(clientfd);
+        ::close(clientfd);
 }

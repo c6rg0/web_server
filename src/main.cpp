@@ -1,24 +1,31 @@
-/*
- * HTTP server:
- * 1. Set up sockets and networking information,
- * 2. Listen to connections,
- * 3. Recieve a HTTP request,
- * 4. Parse the request,
- * 5. Respond,
- */
-
 #include "net.h"
+#include "request.h"
+#include "response.h"
 #include <string>
+#include <map>
 
 int main(void)
 {
-    Network net;
+    // <HTTP target, path target>
+    std::map<std::string, std::string> route_targets = {
+        { "/", "index.html" },
+        { "/index", "index.html" },
+    };
 
 	// TODO: Add signal termination
+    Network net;
+
 	while (1) {
-        net.Listen();
-		net.Response();
+        net.listen();
+
+        Request req;
+        net.read(req.buffer);
+        req.lexer();
+
+        Response res(net, req, route_targets);
 	}
+
+    net.close();
 
 	return 0;
 }
