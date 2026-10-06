@@ -1,5 +1,5 @@
-# Portifolio HTTP server
-- A basic HTTP server using C and Linux/Posix sockets.
+# An uncomplete HTTP server from scratch
+- Using C++ and Linux/Posix network sockets.
 
 ![showcase](showcase.png)
 
@@ -10,9 +10,12 @@
 ## Todo:
 - [x] Read a GET request from HTTP client
 - [x] Send a GET response to a client
-- [ ] Organise code
-- [ ] Support other request types
+- [x] Improve on the previous two aims
+- [x] Organise code
+- [x] Allow for roughly declaring routes
 - [ ] Improve/add on to the parser
-- [ ] Allow for roughly defining routes (possibly with py/lua bindings)
+- [ ] Optimise my code
+- [ ] Add multithreading
 - [ ] Consider security
-- [ ] Make a portifolio
+- [ ] Add websocket support
+- [ ] Support other request methods

@@ -9,8 +9,8 @@
       pkgs = import nixpkgs { inherit system; };
     in
     rec {
-      portifolio-server = pkgs.stdenv.mkDerivation {
-        pname = "portifolio-server";
+      web-server = pkgs.stdenv.mkDerivation {
+        pname = "web-server";
         version = "1.0.0";
 
         src = ./.;
@@ -34,13 +34,13 @@
           runHook preInstall
 
           mkdir -p $out/bin
-          mv $TMPDIR/build/portifolio-server $out/bin/
+          mv $TMPDIR/build/web-server $out/bin/
         '';
       };
     });
 
     defaultPackage = {
-      x86_64-linux = self.packages.x86_64-linux.portifolio-server;
+      x86_64-linux = self.packages.x86_64-linux.web-server;
     };
   };
 }
