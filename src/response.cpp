@@ -67,8 +67,7 @@ std::string Response::get_content (std::string target)
 std::string Response::get_header (size_t content_size)
 {
     std::string http_response = http_messages[http_status];
-
-    //TODO: add a content-size to the header
+    std::string content_size_str = std::to_string(content_size);
 
     std::string header =
         "HTTP/1.1 " 
@@ -76,6 +75,9 @@ std::string Response::get_header (size_t content_size)
         "\n" 
         "Content-Type: " 
         + content_type +
+        "\n" 
+        "Content-Size: " 
+        + content_size_str +
         "\n" 
         "Connection: keep-alive\n"
         "Keep-Alive: timeout=5\n"

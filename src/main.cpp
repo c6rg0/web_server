@@ -5,10 +5,9 @@
 #include <map>
 #include <signal.h>
 
-// TODO: is it fine to have a global variable like this?
 Network net;
 
-void sig_handler(int sig)
+void sig_handler(__attribute__((unused)) int sig)
 {
     net.close();
     _exit(0);

@@ -1,4 +1,3 @@
-//TODO: check if all these headers are required
 #include "net.h"
 #include "response.h"
 #include <iostream>
