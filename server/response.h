@@ -12,7 +12,7 @@ public:
               std::map< std::string, std::string > route_targets );
 
 private:
-    std::string content;
+    std::string content; // std::vector<int> content;
     std::string payload;
     std::string content_type = "text/html";
     int http_status = 200;

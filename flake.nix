@@ -25,7 +25,7 @@
         ];
 
         buildPhase = '' 
-          make -f src/Makefile BUILD_DIR="$TMPDIR/build"
+          make -f server/Makefile BUILD_DIR="$TMPDIR/server"
 
           runHook postBuild
         '';
@@ -34,7 +34,7 @@
           runHook preInstall
 
           mkdir -p $out/bin
-          mv $TMPDIR/build/web-server $out/bin/
+          mv $TMPDIR/server/web-server $out/bin/
         '';
       };
     });
