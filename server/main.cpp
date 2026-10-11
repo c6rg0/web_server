@@ -27,6 +27,7 @@ int main(void)
         net.listen();
         Request req;
         net.read(req.buffer);
+        req.log_request();
         req.lexer();
         Response res(net, req, route_targets);
 	}
