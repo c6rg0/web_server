@@ -26,8 +26,13 @@ int main(void)
     while (1) {
         net.listen();
         Request req;
-        net.read(req.buffer);
-        req.log_request();
+
+        int err = net.read(req.buffer);
+        if (err != 0) {
+            req.log_request();
+            continue;
+        }
+
         req.lexer();
         Response res(net, req, route_targets);
     }

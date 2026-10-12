@@ -8,8 +8,8 @@
 
 class Response {
 public:
-    Response( Network net, Request req,
-              std::map< std::string, std::string > route_targets );
+    Response(Network net, Request req,
+             std::map< std::string, std::string > route_targets);
 
 private:
     std::string content; // std::vector<int> content;
@@ -17,9 +17,9 @@ private:
     std::string content_type = "text/html";
     int http_status = 200;
 
-    std::string get_content( std::string target );
-    std::string get_header( size_t content_size );
-    std::string get_error_content( );
+    std::string get_content(std::string target);
+    std::string get_header(size_t content_size);
+    std::string get_error_content();
 
     std::map< int, std::string > http_messages = {
         { 100, "100 Continue" },

@@ -5,12 +5,12 @@
 
 class Network {
 public:
-    Network( void );
-    void listen( void );
-    void read( char* buffer );
-    void write( std::string payload );
-    void close( void );
-    ~Network( );
+    Network(void);
+    void listen(void);
+    int read(char* buffer);
+    void write(std::string payload);
+    void close(void);
+    ~Network();
 
 private:
     int sockfd;

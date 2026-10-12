@@ -49,14 +49,16 @@ void Network::listen(void)
     std::cout << "\n(Accept success)\n";
 }
 
-void Network::read(char *buffer)
+int Network::read(char *buffer)
 {
     ssize_t request = ::read(clientfd, buffer, 8192);
 
     if (request <= 0) {
-        std::cout << "(Request contains no data or read error)\n";
-        exit(1);
+        std::cerr << "(Request contains no data or read error)\n";
+        return 1;
     }
+
+    return 0;
 }
 
 void Network::write(std::string payload)
