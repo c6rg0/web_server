@@ -1,22 +1,22 @@
 #include "request.h"
-#include <string>
 #include <cstring>
-#include <fstream>
-#include <filesystem>
-#include <iostream>
 #include <ctime>
+#include <filesystem>
+#include <fstream>
+#include <iostream>
+#include <string>
 
-Request::Request ()
+Request::Request()
 {
     req_count++;
 }
 
-void Request::log_request (void)
+void Request::log_request(void)
 {
     std::filesystem::path file_path = "/tmp/c6rg0_web_server";
     std::filesystem::create_directory(file_path);
 
-    if (!std::filesystem::exists(file_path)){
+    if (!std::filesystem::exists(file_path)) {
         std::cerr << "Error: Couldn't create debug directory!\n";
         exit(1);
     }
@@ -35,24 +35,24 @@ void Request::log_request (void)
     file.close();
 }
 
-void Request::lexer (void)
+void Request::lexer(void)
 {
     char* token = std::strtok(buffer, " \n\r\t");
-    if (!token){
+    if (!token) {
         std::cout << "broken\n";
         exit(1);
     }
     method = token;
 
     token = std::strtok(nullptr, " \n\r\t");
-    if (!token){
+    if (!token) {
         std::cout << "broken\n";
         exit(1);
     }
     target = token;
 
     token = std::strtok(nullptr, " \n\r\t");
-    if (!token){
+    if (!token) {
         std::cout << "broken\n";
         exit(1);
     }

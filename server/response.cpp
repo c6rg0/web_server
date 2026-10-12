@@ -1,13 +1,14 @@
 #include "response.h"
-#include "request.h"
 #include "net.h"
-#include <string>
-#include <iostream>
-#include <fstream>
+#include "request.h"
 #include <filesystem>
+#include <fstream>
+#include <iostream>
 #include <map>
+#include <string>
 
-Response::Response (Network net, Request req, std::map<std::string, std::string> route_targets)
+Response::Response(Network net, Request req,
+                   std::map< std::string, std::string > route_targets)
 {
     if ((req.method.compare("GET")) != 0) {
         http_status = 405;
@@ -15,7 +16,7 @@ Response::Response (Network net, Request req, std::map<std::string, std::string>
     }
 
     else {
-        std::string target = route_targets[req.target];
+        std::string target = route_targets[ req.target ];
         content = get_content(target);
     }
 
@@ -24,23 +25,23 @@ Response::Response (Network net, Request req, std::map<std::string, std::string>
     net.write(payload);
 }
 
-std::string Response::get_content (std::string target)
+std::string Response::get_content(std::string target)
 {
     std::filesystem::path file_path = std::filesystem::current_path();
 
-    if (!target.empty()){
+    if (!target.empty()) {
         file_path = file_path / target;
 
-        if (!std::filesystem::exists(file_path)){
+        if (!std::filesystem::exists(file_path)) {
             std::cerr << "Error: Server-side defined file does not exist!\n";
             http_status = 500;
             content = get_error_content();
         }
 
         else {
-            std::ifstream file (file_path);
+            std::ifstream file(file_path);
 
-            if (!file.is_open ()) {
+            if (!file.is_open()) {
                 std::cerr << "Error: Unable to open file!\n";
                 http_status = 500;
                 content = get_error_content();
@@ -48,8 +49,8 @@ std::string Response::get_content (std::string target)
 
             else {
                 // TODO: Assuming that all content is text
-                content.assign((std::istreambuf_iterator<char>(file)),
-                        std::istreambuf_iterator<char>());
+                content.assign((std::istreambuf_iterator< char >(file)),
+                               std::istreambuf_iterator< char >());
             }
 
             file.close();
@@ -64,37 +65,32 @@ std::string Response::get_content (std::string target)
     return content;
 }
 
-std::string Response::get_header (size_t content_size)
+std::string Response::get_header(size_t content_size)
 {
-    std::string http_response = http_messages[http_status];
+    std::string http_response = http_messages[ http_status ];
     std::string content_size_str = std::to_string(content_size);
 
-    std::string header =
-        "HTTP/1.1 " 
-        + http_response +
-        "\n" 
-        "Content-Type: " 
-        + content_type +
-        "\n" 
-        "Content-Size: " 
-        + content_size_str +
-        "\n" 
-        "Connection: keep-alive\n"
-        "Keep-Alive: timeout=5\n"
-        "\n";
+    std::string header = "HTTP/1.1 " + http_response +
+                         "\n"
+                         "Content-Type: " +
+                         content_type +
+                         "\n"
+                         "Content-Size: " +
+                         content_size_str +
+                         "\n"
+                         "Connection: keep-alive\n"
+                         "Keep-Alive: timeout=5\n"
+                         "\n";
 
     return header;
 }
 
-std::string Response::get_error_content ()
+std::string Response::get_error_content()
 {
-    std::string http_response = http_messages[http_status];
+    std::string http_response = http_messages[ http_status ];
 
     content_type = "application/json";
-    content = 
-        "{\"error\": \"" 
-        + http_response + 
-        "\"}";
+    content = "{\"error\": \"" + http_response + "\"}";
 
     return content;
 }

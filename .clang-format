@@ -27,8 +27,8 @@ AlwaysBreakAfterDefinitionReturnType: None
 AlwaysBreakAfterReturnType: None
 AlwaysBreakBeforeMultilineStrings: false
 AlwaysBreakTemplateDeclarations: false
-BinPackArguments: true
-BinPackParameters: true
+BinPackArguments: true 
+BinPackParameters: true 
 BraceWrapping:
   AfterClass: false
   AfterControlStatement: false
@@ -107,12 +107,12 @@ SpaceBeforeCtorInitializerColon: true
 SpaceBeforeInheritanceColon: true
 SpaceBeforeParens: ControlStatementsExceptForEachMacros
 SpaceBeforeRangeBasedForLoopColon: true
-SpaceInEmptyParentheses: true 
+SpaceInEmptyParentheses: false 
 # SpacesBeforeTrailingComments: 2
 SpacesInAngles: true 
 SpacesInContainerLiterals: true 
-SpacesInCStyleCastParentheses: true 
-SpacesInParentheses: true
+SpacesInCStyleCastParentheses: false 
+SpacesInParentheses: false 
 SpacesInSquareBrackets: true 
 SpacesInLineCommentPrefix:
   Minimum: 1

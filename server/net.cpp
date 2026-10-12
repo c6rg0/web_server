@@ -1,14 +1,13 @@
 #include "net.h"
 #include "response.h"
-#include <iostream>
-#include <string>
 #include <fcntl.h>
+#include <iostream>
 #include <netdb.h>
 #include <string>
 #include <sys/socket.h>
 #include <unistd.h> // open(), write(), close()
 
-Network::Network (void)
+Network::Network(void)
 {
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -24,13 +23,13 @@ Network::Network (void)
     serv_addr.sin_port = htons(port);
     serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
 
-    if (bind(sockfd, (sockaddr *)&serv_addr, sizeof(serv_addr)) != 0) {
+    if (bind(sockfd, (sockaddr *) &serv_addr, sizeof(serv_addr)) != 0) {
         std::cout << "(Socket bind failed)\n";
         exit(1);
     }
 }
 
-void Network::listen (void)
+void Network::listen(void)
 {
     if (::listen(sockfd, SOMAXCONN) != 0) {
         std::cout << "(Couldn't listen)\n";
@@ -40,7 +39,7 @@ void Network::listen (void)
     sockaddr_in client_addr;
     socklen_t client_len = sizeof(client_addr);
 
-    clientfd = accept(sockfd, (sockaddr *)&client_addr, &client_len);
+    clientfd = accept(sockfd, (sockaddr *) &client_addr, &client_len);
 
     if (clientfd < 0) {
         std::cout << "(Accept error)\n";
@@ -50,7 +49,7 @@ void Network::listen (void)
     std::cout << "\n(Accept success)\n";
 }
 
-void Network::read (char* buffer)
+void Network::read(char *buffer)
 {
     ssize_t request = ::read(clientfd, buffer, 8192);
 
