@@ -9,7 +9,7 @@ public:
     std::string target;
     std::string protocol;
     // std::string content_type;
-    char buffer[ 8192 ];
+    char buffer [8192];
 
     Request();
     void log_request(void);

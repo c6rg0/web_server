@@ -8,7 +8,7 @@
 #include <string>
 
 Response::Response(Network net, Request req,
-                   std::map< std::string, std::string > route_targets)
+                   std::map<std::string, std::string> route_targets)
 {
     if ((req.method.compare("GET")) != 0) {
         http_status = 405;
@@ -16,7 +16,7 @@ Response::Response(Network net, Request req,
     }
 
     else {
-        std::string target = route_targets[ req.target ];
+        std::string target = route_targets [req.target];
         content = get_content(target);
     }
 
@@ -49,8 +49,8 @@ std::string Response::get_content(std::string target)
 
             else {
                 // TODO: Assuming that all content is text
-                content.assign((std::istreambuf_iterator< char >(file)),
-                               std::istreambuf_iterator< char >());
+                content.assign((std::istreambuf_iterator<char>(file)),
+                               std::istreambuf_iterator<char>());
             }
 
             file.close();
@@ -67,7 +67,7 @@ std::string Response::get_content(std::string target)
 
 std::string Response::get_header(size_t content_size)
 {
-    std::string http_response = http_messages[ http_status ];
+    std::string http_response = http_messages [http_status];
     std::string content_size_str = std::to_string(content_size);
 
     std::string header = "HTTP/1.1 " + http_response +
@@ -87,7 +87,7 @@ std::string Response::get_header(size_t content_size)
 
 std::string Response::get_error_content()
 {
-    std::string http_response = http_messages[ http_status ];
+    std::string http_response = http_messages [http_status];
 
     content_type = "application/json";
     content = "{\"error\": \"" + http_response + "\"}";

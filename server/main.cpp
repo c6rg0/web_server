@@ -18,7 +18,7 @@ int main(void)
     signal(SIGINT, sig_handler);
 
     // <HTTP target, path target>
-    std::map< std::string, std::string > route_targets = {
+    std::map<std::string, std::string> route_targets = {
         { "/", "index.html" },
         { "/index", "index.html" },
     };
