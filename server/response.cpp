@@ -7,17 +7,30 @@
 #include <map>
 #include <string>
 
-Response::Response(Network net, Request req,
-                   std::map<std::string, std::string> route_targets)
+Response::Response(std::string m_method, std::string m_target)
 {
-    if ((req.method.compare("GET")) != 0) {
+    method = m_method;
+    target = m_target;
+}
+
+void Response::handler(Network net)
+{
+    if ((method.compare("GET")) != 0) {
         http_status = 405;
         content = get_error_content();
     }
 
     else {
-        std::string target = route_targets [req.target];
-        content = get_content(target);
+        auto iterator = route_targets.find(target);
+
+        if (iterator != route_targets.end()) {
+            content = get_content(iterator->second);
+        }
+
+        else {
+            http_status = 404;
+            content = get_error_content();
+        }
     }
 
     payload = get_header(content.size());
@@ -25,12 +38,12 @@ Response::Response(Network net, Request req,
     net.write(payload);
 }
 
-std::string Response::get_content(std::string target)
+std::string Response::get_content(std::string file)
 {
     std::filesystem::path file_path = std::filesystem::current_path();
 
-    if (!target.empty()) {
-        file_path = file_path / target;
+    if (!file.empty()) {
+        file_path = file_path / file;
 
         if (!std::filesystem::exists(file_path)) {
             std::cerr << "Error: Server-side defined file does not exist!\n";
@@ -48,7 +61,7 @@ std::string Response::get_content(std::string target)
             }
 
             else {
-                // TODO: Assuming that all content is text
+                // TODO: Will this be compatible with binary data?
                 content.assign((std::istreambuf_iterator<char>(file)),
                                std::istreambuf_iterator<char>());
             }

@@ -17,24 +17,30 @@ int main(void)
 {
     signal(SIGINT, sig_handler);
 
-    // <HTTP target, path target>
-    std::map<std::string, std::string> route_targets = {
-        { "/", "index.html" },
-        { "/index", "index.html" },
-    };
-
     while (1) {
         net.listen();
         Request req;
-
         int err = net.read(req.buffer);
+
         if (err != 0) {
             req.log_request();
             continue;
         }
 
         req.lexer();
-        Response res(net, req, route_targets);
+
+        Response res(req.method, req.target);
+
+        /* TODO:
+         * The below method will take in a Network obj, but if
+         * it was to run concurrently in seperate Response
+         * objects, it'd overwrite clientfd in Network.
+         *
+         * I need to seperate the sock init from the rest of
+         * Network so that multiple clients can simultaneously
+         * exist, thus make multithreading work.
+         */
+        res.handler(net);
     }
 
     return 0;

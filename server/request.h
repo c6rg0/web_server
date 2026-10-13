@@ -5,10 +5,9 @@
 
 class Request {
 public:
-    std::string method;
-    std::string target;
-    std::string protocol;
-    // std::string content_type;
+    std::string method, target, protocol;
+    //          content_type;
+
     char buffer [8192];
 
     Request();
