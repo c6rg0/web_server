@@ -8,10 +8,15 @@
 
 class Response {
 public:
-    Response(std::string m_method, std::string m_target);
-    void handler(Network net);
+    explicit Response(Socket s)
+        : client(std::move(s))
+    {
+    }
+    void handler(std::string method, std::string target);
 
 private:
+    Socket client;
+
     std::string method, target, payload,
         content, // std::vector<int> content;
         content_type = "text/html";
@@ -21,6 +26,7 @@ private:
     std::string get_content(std::string target);
     std::string get_header(size_t content_size);
     std::string get_error_content();
+    void write(std::string payload);
 
     // <HTTP target, path target>
     std::map<std::string, std::string> route_targets = {

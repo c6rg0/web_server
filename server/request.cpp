@@ -1,14 +1,26 @@
 #include "request.h"
 #include <cstring>
 #include <ctime>
+#include <fcntl.h>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <netdb.h>
 #include <string>
+#include <sys/socket.h>
+#include <unistd.h>
 
-Request::Request()
+void Request::handler()
 {
-    req_count++;
+    ssize_t request = ::read(client.fd(), buffer, 8192);
+
+    if (request <= 0) {
+        std::cerr << "(Request contains no data or read error)\n";
+        exit(1);
+    }
+
+    log_request();
+    lexer();
 }
 
 void Request::log_request(void)

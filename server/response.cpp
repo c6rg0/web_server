@@ -1,19 +1,17 @@
 #include "response.h"
 #include "net.h"
 #include "request.h"
+#include <fcntl.h>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <map>
+#include <netdb.h>
 #include <string>
+#include <sys/socket.h>
+#include <unistd.h>
 
-Response::Response(std::string m_method, std::string m_target)
-{
-    method = m_method;
-    target = m_target;
-}
-
-void Response::handler(Network net)
+void Response::handler(std::string method, std::string target)
 {
     if ((method.compare("GET")) != 0) {
         http_status = 405;
@@ -35,7 +33,7 @@ void Response::handler(Network net)
 
     payload = get_header(content.size());
     payload.append(content);
-    net.write(payload);
+    write(payload);
 }
 
 std::string Response::get_content(std::string file)
@@ -106,4 +104,17 @@ std::string Response::get_error_content()
     content = "{\"error\": \"" + http_response + "\"}";
 
     return content;
+}
+
+void Response::write(std::string payload)
+{
+    ssize_t response;
+    response = ::write(client.fd(), payload.data(), payload.size());
+
+    if (response < 0) {
+        std::cout << "(Data wasn't written to target)\n";
+        exit(1);
+    }
+
+    std::cout << "(Data sent to target)\n";
 }

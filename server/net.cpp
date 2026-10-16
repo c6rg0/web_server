@@ -1,88 +1,66 @@
 #include "net.h"
+#include "request.h"
 #include "response.h"
 #include <fcntl.h>
 #include <iostream>
 #include <netdb.h>
-#include <string>
 #include <sys/socket.h>
 #include <unistd.h> // open(), write(), close()
 
-Network::Network(void)
+Socket::~Socket()
 {
-    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    if (fd_ >= 0)
+        close(fd_);
+}
+
+Socket init_server_sock()
+{
+    int sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
     if (sockfd == -1) {
         std::cout << "(Socket error)\n";
         exit(1);
     }
 
-    sockaddr_in serv_addr;
+    Socket socket(sockfd);
+
+    sockaddr_in addr;
     int port = 8080;
 
-    serv_addr.sin_family = AF_INET;
-    serv_addr.sin_port = htons(port);
-    serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(port);
+    addr.sin_addr.s_addr = htonl(INADDR_ANY);
 
-    if (bind(sockfd, (sockaddr *) &serv_addr, sizeof(serv_addr)) != 0) {
+    if (bind(sockfd, (sockaddr *) &addr, sizeof(addr)) != 0) {
         std::cout << "(Socket bind failed)\n";
         exit(1);
     }
-}
 
-void Network::listen(void)
-{
     if (::listen(sockfd, SOMAXCONN) != 0) {
         std::cout << "(Couldn't listen)\n";
         exit(1);
     }
 
-    sockaddr_in client_addr;
-    socklen_t client_len = sizeof(client_addr);
+    return socket;
+}
 
-    clientfd = accept(sockfd, (sockaddr *) &client_addr, &client_len);
+void Server::run(void)
+{
+    for (;;) {
+        sockaddr_in client_addr;
+        socklen_t client_len = sizeof(client_addr);
+        int clientfd =
+            accept(socket.fd(), (sockaddr *) &client_addr, &client_len);
 
-    if (clientfd < 0) {
-        std::cout << "(Accept error)\n";
-        exit(1);
+        if (clientfd < 0) {
+            std::cout << "(Accept error)\n";
+            exit(1);
+        }
+
+        Request req((Socket(clientfd)));
+        req.handler();
+
+        Response res((Socket(clientfd)));
+        res.handler(req.method, req.target);
     }
-
-    std::cout << "\n(Accept success)\n";
-}
-
-int Network::read(char *buffer)
-{
-    ssize_t request = ::read(clientfd, buffer, 8192);
-
-    if (request <= 0) {
-        std::cerr << "(Request contains no data or read error)\n";
-        return 1;
-    }
-
-    return 0;
-}
-
-void Network::write(std::string payload)
-{
-    ssize_t response;
-    response = ::write(clientfd, payload.data(), payload.size());
-    if (response < 0) {
-        std::cout << "(Data wasn't written to target)\n";
-        exit(1);
-    }
-    std::cout << "(Data sent to target)\n";
-}
-
-void Network::close(void)
-{
-    if (clientfd)
-        ::close(clientfd);
-    if (sockfd)
-        ::close(sockfd);
-}
-
-// Trigered at the end of each main() while loop
-Network::~Network()
-{
-    if (clientfd)
-        ::close(clientfd);
 }
