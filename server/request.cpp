@@ -15,7 +15,7 @@ void Request::handler()
     ssize_t request = ::read(client.fd(), buffer, 8192);
 
     if (request <= 0) {
-        std::cerr << "(Request contains no data or read error)\n";
+        std::cerr << "(Request contains no data or read error)" << std::endl;
         exit(1);
     }
 
@@ -29,7 +29,7 @@ void Request::log_request(void)
     std::filesystem::create_directory(file_path);
 
     if (!std::filesystem::exists(file_path)) {
-        std::cerr << "Error: Couldn't create debug directory!\n";
+        std::cerr << "Error: Couldn't create debug directory!" << std::endl;
         exit(1);
     }
 
@@ -39,7 +39,7 @@ void Request::log_request(void)
     std::ofstream file(file_path);
 
     if (!file.is_open()) {
-        std::cerr << "Error: Unable to open file!\n";
+        std::cerr << "Error: Unable to open file!" << std::endl;
         exit(1);
     }
 
@@ -51,21 +51,21 @@ void Request::lexer(void)
 {
     char* token = std::strtok(buffer, " \n\r\t");
     if (!token) {
-        std::cout << "broken\n";
+        std::cout << "Lexer couldn't get method" << std::endl;
         exit(1);
     }
     method = token;
 
     token = std::strtok(nullptr, " \n\r\t");
     if (!token) {
-        std::cout << "broken\n";
+        std::cout << "Lexer couldn't get target" << std::endl;
         exit(1);
     }
     target = token;
 
     token = std::strtok(nullptr, " \n\r\t");
     if (!token) {
-        std::cout << "broken\n";
+        std::cout << "Lexer couldn't get protocol" << std::endl;
         exit(1);
     }
     protocol = token;

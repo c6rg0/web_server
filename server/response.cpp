@@ -36,43 +36,36 @@ void Response::handler(std::string method, std::string target)
     write(payload);
 }
 
-std::string Response::get_content(std::string file)
+std::string Response::get_content(std::string file_name)
 {
     std::filesystem::path file_path = std::filesystem::current_path();
 
-    if (!file.empty()) {
-        file_path = file_path / file;
-
-        if (!std::filesystem::exists(file_path)) {
-            std::cerr << "Error: Server-side defined file does not exist!\n";
-            http_status = 500;
-            content = get_error_content();
-        }
-
-        else {
-            std::ifstream file(file_path);
-
-            if (!file.is_open()) {
-                std::cerr << "Error: Unable to open file!\n";
-                http_status = 500;
-                content = get_error_content();
-            }
-
-            else {
-                // TODO: Will this be compatible with binary data?
-                content.assign((std::istreambuf_iterator<char>(file)),
-                               std::istreambuf_iterator<char>());
-            }
-
-            file.close();
-        }
-    }
-
-    else {
+    if (file_name.empty()) {
         http_status = 404;
-        content = get_error_content();
+        return get_error_content();
     }
 
+    file_path = file_path / file_name;
+
+    if (!std::filesystem::exists(file_path)) {
+        std::cerr << "Error: Server-side defined file does not exist!" << std::endl;
+        http_status = 500;
+        return get_error_content();
+    }
+
+    std::ifstream file(file_path);
+
+    if (!file.is_open()) {
+        std::cerr << "Error: Unable to open file!" << std::endl;
+        http_status = 500;
+        return get_error_content();
+    }
+
+    // TODO: Will this be compatible with binary data?
+    content.assign((std::istreambuf_iterator<char>(file)),
+                   std::istreambuf_iterator<char>());
+
+    file.close();
     return content;
 }
 
@@ -112,9 +105,9 @@ void Response::write(std::string payload)
     response = ::write(client.fd(), payload.data(), payload.size());
 
     if (response < 0) {
-        std::cout << "(Data wasn't written to target)\n";
+        std::cout << "(Data wasn't written to target)" << std::endl;
         exit(1);
     }
 
-    std::cout << "(Data sent to target)\n";
+    std::cout << "(Data sent to target)" << std::endl;
 }

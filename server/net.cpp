@@ -18,7 +18,7 @@ Socket init_server_sock()
     int sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
     if (sockfd == -1) {
-        std::cout << "(Socket error)\n";
+        std::cout << "(Socket error)" << std::endl;
         exit(1);
     }
 
@@ -32,12 +32,12 @@ Socket init_server_sock()
     addr.sin_addr.s_addr = htonl(INADDR_ANY);
 
     if (bind(sockfd, (sockaddr *) &addr, sizeof(addr)) != 0) {
-        std::cout << "(Socket bind failed)\n";
+        std::cout << "(Socket bind failed)" << std::endl;
         exit(1);
     }
 
     if (::listen(sockfd, SOMAXCONN) != 0) {
-        std::cout << "(Couldn't listen)\n";
+        std::cout << "(Couldn't listen)" << std::endl;
         exit(1);
     }
 
@@ -53,7 +53,7 @@ void Server::run(void)
             accept(socket.fd(), (sockaddr *) &client_addr, &client_len);
 
         if (clientfd < 0) {
-            std::cout << "(Accept error)\n";
+            std::cout << "(Accept error)" << std::endl;
             exit(1);
         }
 
