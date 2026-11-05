@@ -1,7 +1,7 @@
 #ifndef REQUEST_H
 #define REQUEST_H
 
-#include "net.h"
+#include "server.h"
 #include <string>
 
 class Request {

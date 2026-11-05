@@ -1,7 +1,7 @@
 #ifndef RESPONSE_H
 #define RESPONSE_H
 
-#include "net.h"
+#include "server.h"
 #include "request.h"
 #include <map>
 #include <string>

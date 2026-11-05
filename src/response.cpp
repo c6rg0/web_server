@@ -1,5 +1,5 @@
 #include "response.h"
-#include "net.h"
+#include "server.h"
 #include "request.h"
 #include <cerrno>
 #include <fcntl.h>

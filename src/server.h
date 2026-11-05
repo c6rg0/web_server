@@ -1,5 +1,5 @@
-#ifndef NET_H
-#define NET_H
+#ifndef SERVER_H
+#define SERVER_H
 
 #include <utility>
 

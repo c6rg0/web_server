@@ -22,11 +22,12 @@
 
         buildInputs = with pkgs; [ 
           clang-tools
+          cloudflared
           apacheHttpd # for testing
         ];
 
         buildPhase = '' 
-          make -f server/Makefile BUILD_DIR="$TMPDIR/server"
+          make -f src/Makefile BUILD_DIR="$TMPDIR/src"
 
           runHook postBuild
         '';
@@ -35,7 +36,7 @@
           runHook preInstall
 
           mkdir -p $out/bin
-          mv $TMPDIR/server/web-server $out/bin/
+          mv $TMPDIR/src/web-server $out/bin/
         '';
       };
     });
