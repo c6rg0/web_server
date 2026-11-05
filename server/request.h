@@ -14,9 +14,9 @@ public:
         : client(std::move(s))
     {
     }
-    void handler();
+    bool handler();
     void log_request(void);
-    void lexer(void);
+    bool lexer(void);
 
 private:
     Socket client;

@@ -22,6 +22,7 @@
 
         buildInputs = with pkgs; [ 
           clang-tools
+          apacheHttpd # for testing
         ];
 
         buildPhase = '' 

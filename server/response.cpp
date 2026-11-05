@@ -1,12 +1,14 @@
 #include "response.h"
 #include "net.h"
 #include "request.h"
+#include <cerrno>
 #include <fcntl.h>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <map>
 #include <netdb.h>
+#include <sstream>
 #include <string>
 #include <sys/socket.h>
 #include <unistd.h>
@@ -48,7 +50,8 @@ std::string Response::get_content(std::string file_name)
     file_path = file_path / file_name;
 
     if (!std::filesystem::exists(file_path)) {
-        std::cerr << "Error: Server-side defined file does not exist!" << std::endl;
+        std::cerr << "Error: Server-side defined file does not exist!"
+                  << std::endl;
         http_status = 500;
         return get_error_content();
     }
@@ -61,12 +64,12 @@ std::string Response::get_content(std::string file_name)
         return get_error_content();
     }
 
-    // TODO: Will this be compatible with binary data?
-    content.assign((std::istreambuf_iterator<char>(file)),
-                   std::istreambuf_iterator<char>());
-
+    // TODO: Add compatibility with binary data
+    std::stringstream stream;
+    stream << file.rdbuf();
     file.close();
-    return content;
+
+    return stream.str();
 }
 
 std::string Response::get_header(size_t content_size)
@@ -75,16 +78,15 @@ std::string Response::get_header(size_t content_size)
     std::string content_size_str = std::to_string(content_size);
 
     std::string header = "HTTP/1.1 " + http_response +
-                         "\n"
+                         "\r\n"
                          "Content-Type: " +
                          content_type +
-                         "\n"
-                         "Content-Size: " +
+                         "\r\n"
+                         "Content-Length: " +
                          content_size_str +
-                         "\n"
-                         "Connection: keep-alive\n"
-                         "Keep-Alive: timeout=5\n"
-                         "\n";
+                         "\r\n"
+                         "Connection: close\r\n"
+                         "\r\n";
 
     return header;
 }
@@ -101,13 +103,24 @@ std::string Response::get_error_content()
 
 void Response::write(std::string payload)
 {
-    ssize_t response;
-    response = ::write(client.fd(), payload.data(), payload.size());
+    for (;;) {
+        ssize_t response;
+        response = ::write(client.fd(), payload.data(), payload.size());
 
-    if (response < 0) {
-        std::cout << "(Data wasn't written to target)" << std::endl;
-        exit(1);
+        if (response < 0) {
+            std::cerr << "(Data wasn't written to target)" << std::endl;
+            if (errno == EINTR)
+                continue;
+            break;
+        }
+
+        if (response == 0) {
+            break;
+        }
+
+        else {
+            std::cerr << "(Data sent to target)" << std::endl;
+            break;
+        }
     }
-
-    std::cout << "(Data sent to target)" << std::endl;
 }

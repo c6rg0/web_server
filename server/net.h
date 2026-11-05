@@ -35,7 +35,7 @@ public:
         : socket(init_server_sock())
     {
     }
-    void run();
+    void worker();
 
 private:
     Socket socket;

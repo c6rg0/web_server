@@ -10,17 +10,20 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-void Request::handler()
+bool Request::handler()
 {
     ssize_t request = ::read(client.fd(), buffer, 8192);
 
     if (request <= 0) {
         std::cerr << "(Request contains no data or read error)" << std::endl;
-        exit(1);
+        return true;
     }
 
+    // std::cerr << buffer << std::endl;
+
     log_request();
-    lexer();
+    bool corrupt = lexer();
+    return corrupt;
 }
 
 void Request::log_request(void)
@@ -47,26 +50,28 @@ void Request::log_request(void)
     file.close();
 }
 
-void Request::lexer(void)
+bool Request::lexer(void)
 {
     char* token = std::strtok(buffer, " \n\r\t");
     if (!token) {
-        std::cout << "Lexer couldn't get method" << std::endl;
-        exit(1);
+        std::cerr << "Lexer couldn't get method" << std::endl;
+        return true;
     }
     method = token;
 
     token = std::strtok(nullptr, " \n\r\t");
     if (!token) {
-        std::cout << "Lexer couldn't get target" << std::endl;
-        exit(1);
+        std::cerr << "Lexer couldn't get target" << std::endl;
+        return true;
     }
     target = token;
 
     token = std::strtok(nullptr, " \n\r\t");
     if (!token) {
-        std::cout << "Lexer couldn't get protocol" << std::endl;
-        exit(1);
+        std::cerr << "Lexer couldn't get protocol" << std::endl;
+        return true;
     }
     protocol = token;
+
+    return false;
 }
