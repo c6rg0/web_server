@@ -1,8 +1,8 @@
 #ifndef RESPONSE_H
 #define RESPONSE_H
 
-#include "server.h"
 #include "request.h"
+#include "server.h"
 #include <map>
 #include <string>
 
@@ -10,21 +10,16 @@ class Response {
 public:
     explicit Response(Socket s)
         : client(std::move(s))
-    {
-    }
+    {}
     void handler(std::string method, std::string target);
 
 private:
     Socket client;
-
-    std::string method, target, payload,
-        content, // std::vector<int> content;
-        content_type = "text/html";
-
     int http_status = 200;
+    std::string content_type = "text/html";
+    std::string method, target;
 
     std::string get_content(std::string target);
-    std::string get_header(size_t content_size);
     std::string get_error_content();
     void write(std::string payload);
 

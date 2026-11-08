@@ -7,16 +7,14 @@ class Socket {
 public:
     explicit Socket(int fd)
         : fd_(fd)
-    {
-    }
+    {}
     ~Socket();
 
     Socket(const Socket&) = delete;
     Socket& operator=(const Socket&) = delete;
     Socket(Socket&& o) noexcept
         : fd_(std::exchange(o.fd_, -1))
-    {
-    }
+    {}
 
     int fd() const
     {
@@ -33,8 +31,7 @@ class Server {
 public:
     explicit Server(void)
         : socket(init_server_sock())
-    {
-    }
+    {}
     void worker();
 
 private:

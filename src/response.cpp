@@ -1,6 +1,6 @@
 #include "response.h"
-#include "server.h"
 #include "request.h"
+#include "server.h"
 #include <cerrno>
 #include <fcntl.h>
 #include <filesystem>
@@ -15,13 +15,19 @@
 
 void Response::handler(std::string method, std::string target)
 {
-    if ((method.compare("GET")) != 0) {
+    this->method = method;
+    this->target = target;
+
+    std::string content;
+    // std::vector<int> content (?);
+
+    if ((this->method.compare("GET")) != 0) {
         http_status = 405;
         content = get_error_content();
     }
 
     else {
-        auto iterator = route_targets.find(target);
+        auto iterator = route_targets.find(this->target);
 
         if (iterator != route_targets.end()) {
             content = get_content(iterator->second);
@@ -33,7 +39,20 @@ void Response::handler(std::string method, std::string target)
         }
     }
 
-    payload = get_header(content.size());
+    std::string http_response = http_messages [http_status];
+    std::string content_size = std::to_string(content.size());
+
+    std::string payload = "HTTP/1.1 " + http_response +
+                          "\r\n"
+                          "Content-Type: " +
+                          content_type +
+                          "\r\n"
+                          "Content-Length: " +
+                          content_size +
+                          "\r\n"
+                          "Connection: close\r\n"
+                          "\r\n";
+
     payload.append(content);
     write(payload);
 }
@@ -72,31 +91,11 @@ std::string Response::get_content(std::string file_name)
     return stream.str();
 }
 
-std::string Response::get_header(size_t content_size)
-{
-    std::string http_response = http_messages [http_status];
-    std::string content_size_str = std::to_string(content_size);
-
-    std::string header = "HTTP/1.1 " + http_response +
-                         "\r\n"
-                         "Content-Type: " +
-                         content_type +
-                         "\r\n"
-                         "Content-Length: " +
-                         content_size_str +
-                         "\r\n"
-                         "Connection: close\r\n"
-                         "\r\n";
-
-    return header;
-}
-
 std::string Response::get_error_content()
 {
     std::string http_response = http_messages [http_status];
-
     content_type = "application/json";
-    content = "{\"error\": \"" + http_response + "\"}";
+    std::string content = "{\"error\": \"" + http_response + "\"}";
 
     return content;
 }
@@ -109,8 +108,12 @@ void Response::write(std::string payload)
 
         if (response < 0) {
             std::cerr << "(Data wasn't written to target)" << std::endl;
-            if (errno == EINTR)
-                continue;
+
+            if (errno == EINTR) {
+                http_status = 400;
+                handler(this->method, this->target);
+            }
+
             break;
         }
 

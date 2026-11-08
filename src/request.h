@@ -6,14 +6,13 @@
 
 class Request {
 public:
-    std::string method, target, protocol;
-    //          content_type;
+    // TODO: Should the below be a map?
+    std::string method, target, protocol /*, content_type */;
     char buffer [8192];
 
     explicit Request(Socket s)
         : client(std::move(s))
-    {
-    }
+    {}
     bool handler();
     void log_request(void);
     bool lexer(void);
