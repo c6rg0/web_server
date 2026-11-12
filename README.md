@@ -20,8 +20,8 @@
 - [x] Organise code and allow for more flexibility
 - [x] First pass at multithreading
   - [ ] Second pass to fix any problems
-- [ ] Support other data types (especially images)
-- [ ] Add unit testing 
+- [x] Support other data types (especially images)
+- [ ] Add unit testing
 - [ ] Pen test and fill any holes
 - [ ] Support other http methods
-- [ ] Use io_uring and optimise 
+- [ ] Use io_uring and optimise

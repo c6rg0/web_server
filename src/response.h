@@ -29,6 +29,16 @@ private:
         { "/index", "index.html" },
     };
 
+    // clang-format off
+    std::map<std::string, std::string> content_type_messages = {
+        { ".html", "text/html" },
+        { ".css", "text/css" },
+        { ".js", "text/js" },
+        { ".json", "text/json" },
+        { ".ico", "image/ico" },
+    };
+    // clang-format on
+
     std::map<int, std::string> http_messages = {
         { 100, "100 Continue" },
         { 200, "200 OK" },

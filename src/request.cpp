@@ -12,11 +12,11 @@
 
 bool Request::handler(void)
 {
-    //TODO: Use a vector and not a char*, and find out how much
-    // memory is required by reading the header before the
-    // payload (if it has one attached). Then converting the
-    // header to string to use with regex later.
-    char buffer[8192];
+    // TODO: Use a vector and not a char*, and find out how much
+    //  memory is required by reading the header before the
+    //  payload (if it has one attached). Then converting the
+    //  header to string to use with regex later.
+    char buffer [8192];
     ssize_t request = ::read(client.fd(), buffer, sizeof(buffer));
 
     if (request <= 0) {

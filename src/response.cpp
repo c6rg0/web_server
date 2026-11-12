@@ -83,8 +83,21 @@ std::string Response::get_content(std::string file_name)
         return get_error_content();
     }
 
-    // This supports non-text data, but the header sends it
-    // as html regardless.
+    std::string extension = std::filesystem::path(file_path).extension();
+    // content_type = content_type_messages [extension];
+
+    auto iterator = content_type_messages.find(extension);
+
+    if (iterator != content_type_messages.end()) {
+        content_type = iterator->second;
+    }
+
+    else {
+        http_status = 415;
+        return get_error_content();
+    }
+
+    // This supports non-text data
     std::stringstream stream;
     stream << file.rdbuf();
     file.close();
