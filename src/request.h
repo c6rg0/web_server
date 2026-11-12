@@ -6,16 +6,15 @@
 
 class Request {
 public:
-    // TODO: Should the below be a map?
+    // TODO: Should the below be a map called tokens?
     std::string method, target, protocol /*, content_type */;
-    char buffer [8192];
 
     explicit Request(Socket s)
         : client(std::move(s))
     {}
-    bool handler();
-    void log_request(void);
-    bool lexer(void);
+    bool handler(void);
+    void log_request(char* buffer);
+    bool lexer(char* buffer);
 
 private:
     Socket client;

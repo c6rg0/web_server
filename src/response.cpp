@@ -83,11 +83,11 @@ std::string Response::get_content(std::string file_name)
         return get_error_content();
     }
 
-    // TODO: Add compatibility with binary data
+    // This supports non-text data, but the header sends it
+    // as html regardless.
     std::stringstream stream;
     stream << file.rdbuf();
     file.close();
-
     return stream.str();
 }
 

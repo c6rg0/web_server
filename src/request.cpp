@@ -10,9 +10,14 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-bool Request::handler()
+bool Request::handler(void)
 {
-    ssize_t request = ::read(client.fd(), buffer, 8192);
+    //TODO: Use a vector and not a char*, and find out how much
+    // memory is required by reading the header before the
+    // payload (if it has one attached). Then converting the
+    // header to string to use with regex later.
+    char buffer[8192];
+    ssize_t request = ::read(client.fd(), buffer, sizeof(buffer));
 
     if (request <= 0) {
         std::cerr << "(Request contains no data or read error)" << std::endl;
@@ -21,12 +26,12 @@ bool Request::handler()
 
     // std::cerr << buffer << std::endl;
 
-    log_request();
-    bool corrupt = lexer();
+    log_request(buffer);
+    bool corrupt = lexer(buffer);
     return corrupt;
 }
 
-void Request::log_request(void)
+void Request::log_request(char* buffer)
 {
     std::filesystem::path file_path = "/tmp/c6rg0_web_server";
     std::filesystem::create_directory(file_path);
@@ -50,7 +55,7 @@ void Request::log_request(void)
     file.close();
 }
 
-bool Request::lexer(void)
+bool Request::lexer(char* buffer)
 {
     char* token = std::strtok(buffer, " \n\r\t");
     if (!token) {
