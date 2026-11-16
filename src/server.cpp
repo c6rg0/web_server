@@ -1,4 +1,5 @@
 #include "server.h"
+#include "config.h"
 #include "request.h"
 #include "response.h"
 #include <fcntl.h>
@@ -23,18 +24,19 @@ Socket init_server_sock()
 
     Socket socket(sockfd);
 
+#ifdef reuse_address
     int i_socket_option = 1;
     if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, (void *) &i_socket_option,
                    sizeof(i_socket_option)) == -1) {
         std::cerr << "(Set socket option error)" << std::endl;
         exit(1);
     }
+#endif
 
     sockaddr_in addr;
-    int port = 8080;
 
     addr.sin_family = AF_INET;
-    addr.sin_port = htons(port);
+    addr.sin_port = htons(config::port);
     addr.sin_addr.s_addr = htonl(INADDR_ANY);
 
     if (bind(sockfd, (sockaddr *) &addr, sizeof(addr)) != 0) {

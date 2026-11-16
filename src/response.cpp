@@ -1,4 +1,5 @@
 #include "response.h"
+#include "config.h"
 #include "request.h"
 #include "server.h"
 #include <cerrno>
@@ -27,9 +28,9 @@ void Response::handler(std::string method, std::string target)
     }
 
     else {
-        auto iterator = route_targets.find(this->target);
+        auto iterator = config::route_targets.find(this->target);
 
-        if (iterator != route_targets.end()) {
+        if (iterator != config::route_targets.end()) {
             content = get_content(iterator->second);
         }
 

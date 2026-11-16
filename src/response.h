@@ -23,12 +23,6 @@ private:
     std::string get_error_content();
     void write(std::string payload);
 
-    // <HTTP target, path target>
-    std::map<std::string, std::string> route_targets = {
-        { "/", "index.html" },
-        { "/index", "index.html" },
-    };
-
     // clang-format off
     std::map<std::string, std::string> content_type_messages = {
         { ".html", "text/html" },

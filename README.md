@@ -11,6 +11,12 @@
 ### Running:
 - If you used nix build, the output binary is `./result/bin/web-server`
 
+### Configuration:
+- Edit:
+  - `./src/config.cpp` to change values,
+  - `./src/config.h` for macro definitions, 
+- and recompile for your changes to have an effect.
+
 ### Testing:
 - For async requests: `ab -c 100 -n 100 http://localhost:8080/`
 
