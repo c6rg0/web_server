@@ -7,6 +7,8 @@
     packages = nixpkgs.lib.genAttrs [ "x86_64-linux" ] (system:
     let
       pkgs = import nixpkgs { inherit system; };
+      lib = nixpkgs.lib;
+      tests = true;
     in
     rec {
       web-server = pkgs.stdenv.mkDerivation {
@@ -19,6 +21,7 @@
           gcc
           cmake
           ninja
+          gtest
         ];
 
         buildInputs = with pkgs; [ 
@@ -27,13 +30,19 @@
           apacheHttpd # for testing
         ];
 
-        cmakeFlags = [];
+        cmakeFlags = [
+          (lib.optional (tests) "-DENABLE_TESTS=1")
+        ];
         makeTarget = "web-server";
         enableParallelBuilding = true;
 
         installPhase = ''
           mkdir -p $out/bin
           mv src/web-server $out/bin/
+
+          if [ -f "src/tests/tests" ]; then
+            mv src/tests/tests $out/bin/
+          fi
         '';
       };
     });
