@@ -7,7 +7,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
-#include <map>
+#include <unordered_map>
 #include <netdb.h>
 #include <sstream>
 #include <string>
@@ -22,17 +22,16 @@ void Response::handler(std::string method, std::string target)
     std::string content;
     // std::vector<int> content (?);
 
-    if ((this->method.compare("GET")) != 0) {
+    if ((method.compare("GET")) != 0) {
         http_status = 405;
         content = get_error_content();
     }
 
     else {
-        auto iterator = config::route_targets.find(this->target);
+        auto iterator = config::route_targets.find(target);
 
-        if (iterator != config::route_targets.end()) {
+        if (iterator != config::route_targets.end())
             content = get_content(iterator->second);
-        }
 
         else {
             http_status = 404;
@@ -40,7 +39,17 @@ void Response::handler(std::string method, std::string target)
         }
     }
 
-    std::string http_response = http_messages [http_status];
+    std::string http_response;
+    auto iterator = http_messages.find(http_status);
+
+    if (iterator != http_messages.end())
+        http_response = iterator->second;
+
+    else {
+        http_status = 500;
+        content = get_error_content();
+    }
+
     std::string content_size = std::to_string(content.size());
 
     std::string payload = "HTTP/1.1 " + http_response +
@@ -85,13 +94,11 @@ std::string Response::get_content(std::string file_name)
     }
 
     std::string extension = std::filesystem::path(file_path).extension();
-    // content_type = content_type_messages [extension];
 
     auto iterator = content_type_messages.find(extension);
 
-    if (iterator != content_type_messages.end()) {
+    if (iterator != content_type_messages.end())
         content_type = iterator->second;
-    }
 
     else {
         http_status = 415;
@@ -107,7 +114,17 @@ std::string Response::get_content(std::string file_name)
 
 std::string Response::get_error_content()
 {
-    std::string http_response = http_messages [http_status];
+    std::string http_response;
+    auto iterator = http_messages.find(http_status);
+
+    if (iterator != http_messages.end())
+        http_response = iterator->second;
+
+    else {
+        http_status = 500;
+        get_error_content();
+    }
+
     content_type = "application/json";
     std::string content = "{\"error\": \"" + http_response + "\"}";
 

@@ -1,7 +1,7 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#include <map>
+#include <unordered_map>
 #include <string>
 
 /*
@@ -17,7 +17,7 @@
 namespace config
 {
 extern int port;
-extern std::map<std::string, std::string> route_targets;
+extern std::unordered_map<std::string, std::string> route_targets;
 }
 
 #endif

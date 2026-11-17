@@ -3,7 +3,7 @@
 
 #include "request.h"
 #include "server.h"
-#include <map>
+#include <unordered_map>
 #include <string>
 
 class Response {
@@ -24,7 +24,7 @@ private:
     void write(std::string payload);
 
     // clang-format off
-    std::map<std::string, std::string> content_type_messages = {
+    std::unordered_map<std::string, std::string> content_type_messages = {
         { ".html", "text/html" },
         { ".css", "text/css" },
         { ".js", "text/js" },
@@ -33,7 +33,7 @@ private:
     };
     // clang-format on
 
-    std::map<int, std::string> http_messages = {
+    std::unordered_map<int, std::string> http_messages = {
         { 100, "100 Continue" },
         { 200, "200 OK" },
         { 300, "300 Multiple Choices" },
