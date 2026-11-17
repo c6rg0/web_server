@@ -1,7 +1,7 @@
 # An incomplete HTTP server from scratch
 - Using C++ and Linux/Posix network sockets.
 
-![showcase](showcase.png)
+![showcase](assets/showcase.png)
 
 ## Usage:
 ### Build:

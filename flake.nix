@@ -42,6 +42,7 @@
 
           if [ -f "src/tests/tests" ]; then
             mv src/tests/tests $out/bin/
+            $out/bin/tests
           fi
         '';
       };

@@ -15,7 +15,7 @@ int port = 8080;
  * { HTTP URL path, fs path relative to project root }
  */
 std::unordered_map<std::string, std::string> route_targets = {
-    { "/", "index.html" },
-    { "/index", "index.html" },
+    { "/", "assets/index.html" },
+    { "/index", "assets/index.html" },
 };
 }
