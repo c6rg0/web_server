@@ -1,4 +1,4 @@
-# An uncomplete HTTP server from scratch
+# An incomplete HTTP server from scratch
 - Using C++ and Linux/Posix network sockets.
 
 ![showcase](showcase.png)
