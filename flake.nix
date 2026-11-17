@@ -16,8 +16,9 @@
         src = ./.;
 
         nativeBuildInputs = with pkgs; [ 
-          clang 
-          gnumake
+          gcc
+          cmake
+          ninja
         ];
 
         buildInputs = with pkgs; [ 
@@ -26,17 +27,13 @@
           apacheHttpd # for testing
         ];
 
-        buildPhase = '' 
-          make -f src/Makefile BUILD_DIR="$TMPDIR/src"
-
-          runHook postBuild
-        '';
+        cmakeFlags = [];
+        makeTarget = "web-server";
+        enableParallelBuilding = true;
 
         installPhase = ''
-          runHook preInstall
-
           mkdir -p $out/bin
-          mv $TMPDIR/src/web-server $out/bin/
+          mv src/web-server $out/bin/
         '';
       };
     });
